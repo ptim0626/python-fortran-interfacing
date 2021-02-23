@@ -3,12 +3,18 @@ from distutils.core import setup, Extension
 from Cython.Build import cythonize
 import numpy
 
+# the name of the extension module (imported by Python)
+modname = 'myhello'
+# all the Fortran files to be included in the extension module
 ffiles = ['hello_fortran.f90']
+# the external library path/name to include all object codes created
 libname = 'fmods'
+# Cython wrapper
+sources = ['hello_cython.pyx']
 
+# compiler and comipler flags for Fortran
 FC = 'gfortran'
 FFLAG = ('-c', '-fPIC', '-O3')
-
 
 # compile all specified Fortran files to object codes
 print('===================')
@@ -28,32 +34,28 @@ res = subprocess.run([FC, *ofiles, '-shared', '-o', soname])
 print(' '.join(res.args))
 print('===================')
 
-
-# Cython wrapper
-files = ['hello_cython.pyx']
-
 # extension module object
 ext_module = [Extension(
-        name="myhello",
-        sources=files,
-        libraries=[libname],
-        library_dirs=["."],
-        include_dirs=["."],
-        runtime_library_dirs=["."],
-        extra_compile_args=["-O3"],
+        name=modname,
+        sources=sources,
+        libraries=[libname], # the external library path
+        library_dirs=['.'], # additional library directory to be searched
+        include_dirs=['.'], # additional header directory
+        runtime_library_dirs=['.'], # the path to 'libname', used in runtime
+        extra_compile_args=['-O3', '-fPIC'],
         )
         ]
 
 # the setup command
 print('Create the extension module...')
-setup(name="myhello",
-        ext_modules=cythonize(ext_module, language_level=3),
-        )
+setup(name=modname,
+      ext_modules=cythonize(ext_module, language_level=3),
+      )
 print('===================')
-
 
 # clean up manually
 print('Clean up...')
-cfiles = [f.split('.')[0] + '.c' for f in files]
+cfiles = [f.split('.')[0] + '.c' for f in sources]
 subprocess.run(['rm', '-r', 'build/', *ofiles, *cfiles])
 print('===================')
+

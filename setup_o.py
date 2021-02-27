@@ -1,14 +1,15 @@
 import subprocess
+import glob
 from distutils.core import setup, Extension
 from Cython.Build import cythonize
 import numpy
 
 # the name of the extension module (imported by Python)
-modname = 'myhello'
+modname = 'fextension'
 # all the Fortran files to be included in the extension module
-ffiles = ['hello_fortran.f90']
+ffiles = ['hello_fortran.f90', 'number_test.f90']
 # Cython wrapper
-sources = ['hello_cython.pyx']
+sources = ['fortran_cython_wrapper.pyx']
 
 # compiler and compiler flags for Fortran
 FC = 'gfortran'
@@ -46,6 +47,7 @@ print('===================')
 # clean up manually
 print('Clean up...')
 cfiles = [f.split('.')[0] + '.c' for f in sources]
-subprocess.run(['rm', '-r', 'build/', *ofiles, *cfiles])
+module_files = glob.glob('*.mod')
+subprocess.run(['rm', '-r', 'build/', *ofiles, *cfiles, *module_files])
 print('===================')
 

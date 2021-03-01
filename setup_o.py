@@ -7,7 +7,7 @@ import numpy
 # the name of the extension module (imported by Python)
 modname = 'fextension'
 # all the Fortran files to be included in the extension module
-ffiles = ['hello_fortran.f90', 'number_test.f90']
+ffiles = ['hello_fortran.f90', 'number_example.f90']
 # Cython wrapper
 sources = ['fortran_cython_wrapper.pyx']
 

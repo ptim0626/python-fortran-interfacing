@@ -1,4 +1,4 @@
-subroutine hello_fortran() bind(c)
-  print *, "Fortran Hello world!"
+subroutine hello_world() bind(c, name="c_hello_world")
+  print *, "Fortran: Hello world!"
 end subroutine
 
